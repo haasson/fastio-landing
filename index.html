@@ -1,0 +1,1959 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fastio — конструктор сайта для кафе с онлайн-заказами</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700&family=Onest:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #0f0e0d;
+    --white: #fafaf8;
+    --cream: #f5f3ee;
+    --accent: #e85c2c;
+    --accent-light: #fff0eb;
+    --muted: #7a7670;
+    --border: #e2dfd8;
+    --card-bg: #ffffff;
+    --font-display: 'Unbounded', sans-serif;
+    --font-body: 'Onest', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--white);
+    color: var(--black);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(250,250,248,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-logo {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--black);
+    text-decoration: none;
+    letter-spacing: -0.03em;
+  }
+
+  .nav-logo span { color: var(--accent); }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 14px;
+    color: var(--muted);
+    text-decoration: none;
+    font-weight: 400;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--black); }
+
+  .nav-cta {
+    background: var(--black);
+    color: var(--white) !important;
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-weight: 500 !important;
+    font-size: 14px !important;
+    transition: background 0.2s !important;
+  }
+
+  .nav-cta:hover { background: var(--accent) !important; color: var(--white) !important; }
+
+  /* HERO */
+  .hero {
+    padding: 100px 2rem 80px;
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 12px;
+    border-radius: 100px;
+    margin-bottom: 24px;
+    font-family: var(--font-body);
+  }
+
+  .hero-badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    display: block;
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 3.5vw, 46px);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.04em;
+    color: var(--black);
+    margin-bottom: 20px;
+  }
+
+  h1 em {
+    font-style: normal;
+    color: var(--accent);
+  }
+
+  .hero-sub {
+    font-size: 17px;
+    color: var(--muted);
+    font-weight: 300;
+    line-height: 1.6;
+    margin-bottom: 36px;
+    max-width: 420px;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    background: var(--black);
+    color: var(--white);
+    padding: 14px 28px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    font-family: var(--font-body);
+    transition: background 0.2s, transform 0.1s;
+    display: inline-block;
+  }
+
+  .btn-primary:hover { background: var(--accent); transform: translateY(-1px); }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--black);
+    padding: 14px 28px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    font-family: var(--font-body);
+    border: 1.5px solid var(--border);
+    transition: border-color 0.2s, transform 0.1s;
+    display: inline-block;
+  }
+
+  .btn-secondary:hover { border-color: var(--black); transform: translateY(-1px); }
+
+  .hero-stats {
+    display: flex;
+    gap: 24px;
+    margin-top: 40px;
+  }
+
+  .hero-stat {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .hero-stat-num {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--black);
+    letter-spacing: -0.04em;
+  }
+
+  .hero-stat-label {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 400;
+    margin-top: 2px;
+  }
+
+  /* HERO VISUAL */
+  .hero-visual {
+    position: relative;
+  }
+
+  .hero-mockup {
+    background: var(--black);
+    border-radius: 16px;
+    overflow: hidden;
+    aspect-ratio: 4/3;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.15);
+  }
+
+  .mockup-bar {
+    background: #1a1917;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #febc2e; }
+  .dot-g { background: #28c840; }
+
+  .mockup-url {
+    margin-left: 10px;
+    background: #2a2927;
+    border-radius: 5px;
+    padding: 3px 12px;
+    font-size: 11px;
+    color: #888;
+    font-family: monospace;
+    flex: 1;
+    max-width: 200px;
+  }
+
+  .mockup-content {
+    flex: 1;
+    background: var(--cream);
+    display: grid;
+    grid-template-columns: 220px 1fr;
+  }
+
+  .mockup-sidebar {
+    background: #ffffff;
+    border-right: 1px solid var(--border);
+    padding: 14px;
+  }
+
+  .mockup-sidebar-title {
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 10px;
+    font-family: var(--font-body);
+  }
+
+  .mockup-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    margin-bottom: 2px;
+    font-size: 11px;
+    color: var(--muted);
+    font-family: var(--font-body);
+    cursor: default;
+  }
+
+  .mockup-menu-item.active {
+    background: var(--accent-light);
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  .mockup-menu-icon {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    background: currentColor;
+    opacity: 0.3;
+    flex-shrink: 0;
+  }
+
+  .mockup-main {
+    padding: 16px;
+    overflow: hidden;
+  }
+
+  .mockup-section-header {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--black);
+    margin-bottom: 10px;
+    font-family: var(--font-body);
+  }
+
+  .mockup-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .mockup-stat-card {
+    background: white;
+    border-radius: 8px;
+    padding: 10px;
+    border: 1px solid var(--border);
+  }
+
+  .mockup-stat-label {
+    font-size: 8px;
+    color: var(--muted);
+    font-family: var(--font-body);
+    margin-bottom: 3px;
+  }
+
+  .mockup-stat-value {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--black);
+    font-family: var(--font-display);
+    letter-spacing: -0.03em;
+  }
+
+  .mockup-orders {
+    background: white;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .mockup-order-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 7px 10px;
+    border-bottom: 1px solid var(--border);
+    font-size: 9px;
+    font-family: var(--font-body);
+  }
+
+  .mockup-order-row:last-child { border-bottom: none; }
+
+  .order-badge {
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 8px;
+    font-weight: 500;
+  }
+
+  .badge-new { background: #e8f5e9; color: #2e7d32; }
+  .badge-cook { background: #fff8e1; color: #f57f17; }
+  .badge-done { background: #e3f2fd; color: #1565c0; }
+
+  .floating-card {
+    position: absolute;
+    background: white;
+    border-radius: 12px;
+    padding: 12px 16px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    border: 1px solid var(--border);
+  }
+
+  .float-1 {
+    bottom: -20px;
+    left: -24px;
+    font-size: 12px;
+    font-family: var(--font-body);
+    min-width: 160px;
+  }
+
+  .float-1-label { color: var(--muted); font-size: 10px; margin-bottom: 4px; }
+  .float-1-value { font-weight: 600; color: var(--black); font-size: 15px; }
+
+  .float-2 {
+    top: -16px;
+    right: -20px;
+    font-size: 12px;
+    font-family: var(--font-body);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .float-2-icon {
+    width: 32px;
+    height: 32px;
+    background: var(--accent-light);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+  }
+
+  .float-2-text { font-size: 11px; color: var(--muted); }
+  .float-2-val { font-weight: 600; color: var(--black); font-size: 13px; }
+
+  /* LOGOS */
+  .logos-section {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 2rem;
+    background: var(--cream);
+  }
+
+  .logos-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+
+  .logos-label {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 400;
+    white-space: nowrap;
+  }
+
+  .logos-list {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .logo-pill {
+    font-family: var(--font-display);
+    font-size: 12px;
+    font-weight: 600;
+    color: #b8b4ac;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+  }
+
+  /* SECTION COMMON */
+  section { padding: 80px 2rem; }
+
+  .section-inner { max-width: 1100px; margin: 0 auto; }
+
+  .section-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+    font-family: var(--font-body);
+  }
+
+  h2 {
+    font-family: var(--font-display);
+    font-size: clamp(24px, 2.8vw, 38px);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 1.1;
+    color: var(--black);
+    margin-bottom: 16px;
+  }
+
+  .section-sub {
+    font-size: 17px;
+    color: var(--muted);
+    font-weight: 300;
+    max-width: 500px;
+    line-height: 1.6;
+    margin-bottom: 48px;
+  }
+
+  /* PAIN */
+  .pain-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .pain-card {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pain-icon {
+    font-size: 28px;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .pain-title {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--black);
+    margin-bottom: 10px;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+  }
+
+  .pain-text {
+    font-size: 14px;
+    color: var(--muted);
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  .pain-cross {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 24px;
+    height: 24px;
+    background: #fdecea;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: #c62828;
+    font-weight: 700;
+  }
+
+  /* DEMO */
+  .demo-section { background: var(--black); color: var(--white); }
+
+  .demo-section h2 { color: var(--white); }
+  .demo-section .section-tag { color: #ff8c5a; }
+  .demo-section .section-sub { color: rgba(255,255,255,0.5); }
+
+  .demo-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: start;
+  }
+
+  .demo-screenshot {
+    background: #1a1917;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid #2a2927;
+  }
+
+  .demo-screenshot-bar {
+    background: #232220;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border-bottom: 1px solid #2a2927;
+  }
+
+  .demo-screenshot-content {
+    padding: 20px;
+    min-height: 280px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .demo-editor-row {
+    display: flex;
+    gap: 12px;
+  }
+
+  .demo-editor-panel {
+    background: #232220;
+    border-radius: 8px;
+    padding: 14px;
+    flex: 0 0 130px;
+  }
+
+  .demo-editor-preview {
+    background: #2a2927;
+    border-radius: 8px;
+    flex: 1;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .preview-header {
+    background: var(--accent);
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .preview-logo-mock {
+    font-family: var(--font-display);
+    font-size: 11px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: -0.02em;
+  }
+
+  .preview-nav-mock {
+    display: flex;
+    gap: 10px;
+  }
+
+  .preview-nav-dot {
+    width: 28px;
+    height: 6px;
+    background: rgba(255,255,255,0.4);
+    border-radius: 3px;
+  }
+
+  .preview-hero-mock {
+    padding: 16px 14px;
+    flex: 1;
+  }
+
+  .preview-title-mock {
+    width: 60%;
+    height: 10px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 5px;
+    margin-bottom: 8px;
+  }
+
+  .preview-sub-mock {
+    width: 80%;
+    height: 7px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 4px;
+    margin-bottom: 6px;
+  }
+
+  .preview-btn-mock {
+    width: 80px;
+    height: 24px;
+    background: var(--accent);
+    border-radius: 6px;
+    margin-top: 10px;
+    opacity: 0.9;
+  }
+
+  .preview-dishes {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 6px;
+    padding: 0 14px 14px;
+  }
+
+  .preview-dish-card {
+    background: rgba(255,255,255,0.08);
+    border-radius: 6px;
+    height: 50px;
+  }
+
+  .editor-option {
+    margin-bottom: 10px;
+  }
+
+  .editor-option-label {
+    font-size: 8px;
+    color: #666;
+    margin-bottom: 4px;
+    font-family: var(--font-body);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .editor-palette {
+    display: flex;
+    gap: 4px;
+  }
+
+  .palette-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  .palette-dot.selected {
+    outline: 2px solid white;
+    outline-offset: 1px;
+  }
+
+  .editor-block-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .editor-block {
+    background: rgba(255,255,255,0.06);
+    border-radius: 4px;
+    padding: 5px 8px;
+    font-size: 8px;
+    color: #aaa;
+    font-family: var(--font-body);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .editor-block-drag {
+    width: 8px;
+    height: 8px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    opacity: 0.4;
+  }
+
+  .drag-dot {
+    width: 2px;
+    height: 2px;
+    background: currentColor;
+    border-radius: 50%;
+  }
+
+  .demo-features-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding-top: 8px;
+  }
+
+  .demo-feature {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  .demo-feature-num {
+    font-family: var(--font-display);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    width: 24px;
+    height: 24px;
+    border: 1.5px solid var(--accent);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .demo-feature-title {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--white);
+    margin-bottom: 4px;
+  }
+
+  .demo-feature-text {
+    font-size: 13px;
+    color: rgba(255,255,255,0.45);
+    font-weight: 300;
+    line-height: 1.5;
+  }
+
+  .demo-cta-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 32px;
+  }
+
+  .btn-accent {
+    background: var(--accent);
+    color: white;
+    padding: 13px 24px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    font-family: var(--font-body);
+    transition: opacity 0.2s;
+  }
+
+  .btn-accent:hover { opacity: 0.85; }
+
+  .btn-ghost {
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.7);
+    padding: 13px 24px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 400;
+    text-decoration: none;
+    font-family: var(--font-body);
+    transition: background 0.2s;
+  }
+
+  .btn-ghost:hover { background: rgba(255,255,255,0.14); }
+
+  /* FEATURES */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .feature-card {
+    background: var(--white);
+    padding: 28px;
+    transition: background 0.2s;
+  }
+
+  .feature-card:hover { background: var(--cream); }
+
+  .feature-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--accent-light);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    margin-bottom: 14px;
+  }
+
+  .feature-title {
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--black);
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+  }
+
+  .feature-text {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  /* COMPARE */
+  .compare-section { background: var(--cream); }
+
+  .compare-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: white;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    font-size: 14px;
+  }
+
+  .compare-table th {
+    padding: 16px 20px;
+    text-align: left;
+    font-family: var(--font-display);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    border-bottom: 1px solid var(--border);
+    background: var(--cream);
+    color: var(--muted);
+  }
+
+  .compare-table th.fastio-col {
+    background: var(--black);
+    color: var(--white);
+  }
+
+  .compare-table td {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    color: var(--black);
+    font-weight: 300;
+    vertical-align: middle;
+  }
+
+  .compare-table tr:last-child td { border-bottom: none; }
+
+  .compare-table td.fastio-col {
+    background: #fafaf8;
+    font-weight: 500;
+  }
+
+  .check { color: #2e7d32; font-size: 16px; }
+  .cross { color: #c62828; font-size: 14px; }
+  .partial { color: #e65100; font-size: 13px; }
+
+  /* PRICING */
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    max-width: 740px;
+    margin: 0 auto;
+  }
+
+  .pricing-card {
+    background: var(--card-bg);
+    border: 1.5px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    transition: border-color 0.2s;
+  }
+
+  .pricing-card:hover { border-color: var(--black); }
+
+  .pricing-card.featured {
+    background: var(--black);
+    border-color: var(--black);
+    color: var(--white);
+  }
+
+  .pricing-label {
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 16px;
+    font-family: var(--font-body);
+  }
+
+  .pricing-card.featured .pricing-label { color: rgba(255,255,255,0.5); }
+
+  .pricing-price {
+    font-family: var(--font-display);
+    font-size: 36px;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    color: var(--black);
+    margin-bottom: 4px;
+  }
+
+  .pricing-card.featured .pricing-price { color: var(--white); }
+
+  .pricing-period {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 24px;
+    font-weight: 300;
+  }
+
+  .pricing-card.featured .pricing-period { color: rgba(255,255,255,0.4); }
+
+  .pricing-divider {
+    height: 1px;
+    background: var(--border);
+    margin-bottom: 20px;
+  }
+
+  .pricing-card.featured .pricing-divider { background: rgba(255,255,255,0.12); }
+
+  .pricing-features {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+
+  .pricing-features li {
+    font-size: 14px;
+    color: var(--muted);
+    font-weight: 300;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .pricing-card.featured .pricing-features li { color: rgba(255,255,255,0.65); }
+
+  .pricing-features li::before {
+    content: '✓';
+    color: #2e7d32;
+    font-size: 13px;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+
+  .pricing-card.featured .pricing-features li::before { color: #81c784; }
+
+  /* STEPS */
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    position: relative;
+  }
+
+  .steps-grid::before {
+    content: '';
+    position: absolute;
+    top: 24px;
+    left: 15%;
+    right: 15%;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .step {
+    text-align: center;
+    padding: 0 20px;
+  }
+
+  .step-num {
+    width: 48px;
+    height: 48px;
+    background: var(--black);
+    color: var(--white);
+    border-radius: 50%;
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .step-title {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--black);
+    margin-bottom: 10px;
+    letter-spacing: -0.02em;
+  }
+
+  .step-text {
+    font-size: 14px;
+    color: var(--muted);
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  /* EXAMPLES */
+  .examples-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .example-card {
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .example-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+  }
+
+  .example-preview {
+    height: 180px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .ep-1 { background: linear-gradient(135deg, #1a1917, #2a2927); }
+  .ep-2 { background: linear-gradient(135deg, #0d3b2e, #1a5c45); }
+  .ep-3 { background: linear-gradient(135deg, #2c1654, #4a2080); }
+
+  .example-preview-inner {
+    flex: 1;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .ep-name {
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: -0.03em;
+  }
+
+  .ep-tag {
+    font-size: 9px;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .ep-dishes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-top: auto;
+  }
+
+  .ep-dish {
+    background: rgba(255,255,255,0.08);
+    border-radius: 6px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    font-size: 9px;
+    color: rgba(255,255,255,0.5);
+    font-family: var(--font-body);
+  }
+
+  .example-info {
+    background: white;
+    padding: 16px;
+  }
+
+  .example-name {
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--black);
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+  }
+
+  .example-type {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 300;
+    margin-bottom: 12px;
+  }
+
+  .example-link {
+    font-size: 12px;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .example-link:hover { text-decoration: underline; }
+
+  /* FAQ */
+  .faq-list {
+    max-width: 680px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .faq-item {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .faq-question {
+    padding: 18px 20px;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--black);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+    background: var(--white);
+    transition: background 0.2s;
+  }
+
+  .faq-question:hover { background: var(--cream); }
+
+  .faq-chevron {
+    font-size: 12px;
+    color: var(--muted);
+    transition: transform 0.2s;
+    flex-shrink: 0;
+    margin-left: 12px;
+  }
+
+  .faq-item.open .faq-chevron { transform: rotate(180deg); }
+
+  .faq-answer {
+    display: none;
+    padding: 0 20px 18px;
+    font-size: 14px;
+    color: var(--muted);
+    font-weight: 300;
+    line-height: 1.7;
+    background: var(--white);
+  }
+
+  .faq-item.open .faq-answer { display: block; }
+
+  /* CTA SECTION */
+  .cta-section {
+    background: var(--black);
+    text-align: center;
+    padding: 100px 2rem;
+  }
+
+  .cta-section h2 { color: var(--white); margin-bottom: 16px; }
+
+  .cta-sub {
+    font-size: 17px;
+    color: rgba(255,255,255,0.4);
+    font-weight: 300;
+    margin-bottom: 40px;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+  }
+
+  .cta-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1100px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .footer-copy {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 300;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 20px;
+    list-style: none;
+  }
+
+  .footer-links a {
+    font-size: 13px;
+    color: var(--muted);
+    text-decoration: none;
+    font-weight: 300;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--black); }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .hero { grid-template-columns: 1fr; gap: 40px; padding: 60px 1.25rem 60px; }
+    .hero-visual { display: none; }
+    .pain-grid { grid-template-columns: 1fr; }
+    .demo-grid { grid-template-columns: 1fr; }
+    .features-grid { grid-template-columns: 1fr 1fr; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .steps-grid { grid-template-columns: 1fr; gap: 32px; }
+    .steps-grid::before { display: none; }
+    .examples-grid { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+    .compare-table { font-size: 12px; }
+    .compare-table th, .compare-table td { padding: 10px 12px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">Fast<span>io</span></a>
+  <ul class="nav-links">
+    <li><a href="#demo">Демо</a></li>
+    <li><a href="#features">Возможности</a></li>
+    <li><a href="#pricing">Тарифы</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="#" class="nav-cta">Попробовать бесплатно</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section style="padding:0;">
+  <div class="hero">
+    <div>
+      <div class="hero-badge">Конструктор сайта для малого бизнеса</div>
+      <h1>Сайт с <em>онлайн-заказами</em> для любого бизнеса</h1>
+      <p class="hero-sub">Кафе, салон красоты, кальянная, частный мастер — настраиваете сайт и принимаете заказы сами. Без агентств и программистов.</p>
+      <div class="hero-actions">
+        <a href="#" class="btn-primary">Попробовать бесплатно</a>
+        <a href="#demo" class="btn-secondary">Смотреть демо →</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <span class="hero-stat-num">14 дней</span>
+          <span class="hero-stat-label">бесплатного доступа</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-num">0%</span>
+          <span class="hero-stat-label">комиссии с заказов</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-num">15 мин</span>
+          <span class="hero-stat-label">до первого заказа</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="hero-mockup">
+        <div class="mockup-bar">
+          <div class="dot dot-r"></div>
+          <div class="dot dot-y"></div>
+          <div class="dot dot-g"></div>
+          <div class="mockup-url">admin.fastio.ru</div>
+        </div>
+        <div class="mockup-content">
+          <div class="mockup-sidebar">
+            <div class="mockup-sidebar-title">Панель управления</div>
+            <div class="mockup-menu-item active">
+              <div class="mockup-menu-icon"></div>
+              Заказы
+            </div>
+            <div class="mockup-menu-item">
+              <div class="mockup-menu-icon"></div>
+              Меню
+            </div>
+            <div class="mockup-menu-item">
+              <div class="mockup-menu-icon"></div>
+              Сайт
+            </div>
+            <div class="mockup-menu-item">
+              <div class="mockup-menu-icon"></div>
+              Акции
+            </div>
+            <div class="mockup-menu-item">
+              <div class="mockup-menu-icon"></div>
+              Филиалы
+            </div>
+            <div class="mockup-menu-item">
+              <div class="mockup-menu-icon"></div>
+              Аналитика
+            </div>
+          </div>
+          <div class="mockup-main">
+            <div class="mockup-section-header">Заказы сегодня</div>
+            <div class="mockup-cards">
+              <div class="mockup-stat-card">
+                <div class="mockup-stat-label">Новых</div>
+                <div class="mockup-stat-value">12</div>
+              </div>
+              <div class="mockup-stat-card">
+                <div class="mockup-stat-label">Выручка</div>
+                <div class="mockup-stat-value">14к</div>
+              </div>
+              <div class="mockup-stat-card">
+                <div class="mockup-stat-label">Ср. чек</div>
+                <div class="mockup-stat-value">840₽</div>
+              </div>
+            </div>
+            <div class="mockup-orders">
+              <div class="mockup-order-row">
+                <span>Заказ #1042</span>
+                <span class="order-badge badge-new">Новый</span>
+              </div>
+              <div class="mockup-order-row">
+                <span>Заказ #1041</span>
+                <span class="order-badge badge-cook">Готовится</span>
+              </div>
+              <div class="mockup-order-row">
+                <span>Заказ #1040</span>
+                <span class="order-badge badge-done">Выдан</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="floating-card float-1">
+        <div class="float-1-label">Новый заказ только что</div>
+        <div class="float-1-value">Шаурма × 2 + напиток</div>
+      </div>
+      <div class="floating-card float-2">
+        <div class="float-2-icon">📦</div>
+        <div>
+          <div class="float-2-text">Заказов за неделю</div>
+          <div class="float-2-val">+34% к прошлой</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOGOS -->
+<div class="logos-section">
+  <div class="logos-inner">
+    <span class="logos-label">Подходит для</span>
+    <div class="logos-list">
+      <span class="logo-pill">Кафе</span>
+      <span class="logo-pill">Салоны красоты</span>
+      <span class="logo-pill">Кальянные</span>
+      <span class="logo-pill">Пиццерии</span>
+      <span class="logo-pill">Мастера по ремонту</span>
+      <span class="logo-pill">Кофейни</span>
+      <span class="logo-pill">Частные мастера</span>
+    </div>
+  </div>
+</div>
+
+<!-- PAIN -->
+<section>
+  <div class="section-inner">
+    <span class="section-tag">Проблема</span>
+    <h2>Знакомо?</h2>
+    <p class="section-sub">Без своего сайта вы зависите от агрегаторов, сарафанного радио или платите агентствам.</p>
+    <div class="pain-grid">
+      <div class="pain-card">
+        <div class="pain-cross">✕</div>
+        <span class="pain-icon">💸</span>
+        <div class="pain-title">Агрегаторы берут до 35% с каждого заказа</div>
+        <div class="pain-text">При обороте 300к в месяц вы отдаёте агрегатору до 100 тысяч. Каждый месяц. Навсегда.</div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-cross">✕</div>
+        <span class="pain-icon">🏗️</span>
+        <div class="pain-title">Разработка сайта стоит от 80 тысяч</div>
+        <div class="pain-text">И ещё 3 месяца ждать. А потом отдельно платить за поддержку, обновления и каждую правку в меню.</div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-cross">✕</div>
+        <span class="pain-icon">📱</span>
+        <div class="pain-title">Заказы в директе и по телефону — это хаос</div>
+        <div class="pain-text">Заявки теряются, клиент ждёт ответа, вы тратите время на переписку вместо работы.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO -->
+<section class="demo-section" id="demo">
+  <div class="section-inner">
+    <span class="section-tag">Демо</span>
+    <h2>Посмотрите как это работает</h2>
+    <p class="section-sub">Редактор сайта, меню, заказы — всё в одном месте. Настраиваете сами, без технических знаний.</p>
+    <div class="demo-grid">
+      <div>
+        <div class="demo-screenshot">
+          <div class="demo-screenshot-bar">
+            <div class="dot dot-r"></div>
+            <div class="dot dot-y"></div>
+            <div class="dot dot-g"></div>
+          </div>
+          <div class="demo-screenshot-content">
+            <div class="demo-editor-row">
+              <div class="demo-editor-panel">
+                <div class="editor-option">
+                  <div class="editor-option-label">Палитра</div>
+                  <div class="editor-palette">
+                    <div class="palette-dot selected" style="background:#e85c2c;"></div>
+                    <div class="palette-dot" style="background:#1a5c45;"></div>
+                    <div class="palette-dot" style="background:#4a2080;"></div>
+                    <div class="palette-dot" style="background:#1a1917;"></div>
+                  </div>
+                </div>
+                <div class="editor-option">
+                  <div class="editor-option-label">Блоки страницы</div>
+                  <div class="editor-block-list">
+                    <div class="editor-block">
+                      <div class="editor-block-drag"><div class="drag-dot"></div><div class="drag-dot"></div><div class="drag-dot"></div><div class="drag-dot"></div></div>
+                      Шапка
+                    </div>
+                    <div class="editor-block">
+                      <div class="editor-block-drag"><div class="drag-dot"></div><div class="drag-dot"></div><div class="drag-dot"></div><div class="drag-dot"></div></div>
+                      Акции
+                    </div>
+                    <div class="editor-block">
+                      <div class="editor-block-drag"><div class="drag-dot"></div><div class="drag-dot"></div><div class="drag-dot"></div><div class="drag-dot"></div></div>
+                      Меню
+                    </div>
+                    <div class="editor-block">
+                      <div class="editor-block-drag"><div class="drag-dot"></div><div class="drag-dot"></div><div class="drag-dot"></div><div class="drag-dot"></div></div>
+                      О нас
+                    </div>
+                    <div class="editor-block">
+                      <div class="editor-block-drag"><div class="drag-dot"></div><div class="drag-dot"></div><div class="drag-dot"></div><div class="drag-dot"></div></div>
+                      Контакты
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="demo-editor-preview">
+                <div class="preview-header">
+                  <div class="preview-logo-mock">ШАУРМА ХАУС</div>
+                  <div class="preview-nav-mock">
+                    <div class="preview-nav-dot"></div>
+                    <div class="preview-nav-dot"></div>
+                  </div>
+                </div>
+                <div class="preview-hero-mock">
+                  <div class="preview-title-mock"></div>
+                  <div class="preview-sub-mock"></div>
+                  <div class="preview-sub-mock" style="width:60%;"></div>
+                  <div class="preview-btn-mock"></div>
+                </div>
+                <div class="preview-dishes">
+                  <div class="preview-dish-card"></div>
+                  <div class="preview-dish-card"></div>
+                  <div class="preview-dish-card"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="demo-features-list">
+          <div class="demo-feature">
+            <div class="demo-feature-num">1</div>
+            <div>
+              <div class="demo-feature-title">Выбираете палитру или задаёте свои цвета</div>
+              <div class="demo-feature-text">Предустановленные темы или полная свобода — задайте любой цвет под ваш брендинг.</div>
+            </div>
+          </div>
+          <div class="demo-feature">
+            <div class="demo-feature-num">2</div>
+            <div>
+              <div class="demo-feature-title">Перетаскиваете блоки в нужном порядке</div>
+              <div class="demo-feature-text">Шапка, меню, акции, контакты, доставка — добавляете то что нужно, убираете лишнее.</div>
+            </div>
+          </div>
+          <div class="demo-feature">
+            <div class="demo-feature-num">3</div>
+            <div>
+              <div class="demo-feature-title">Заполняете меню и запускаете</div>
+              <div class="demo-feature-text">Добавляете блюда, фото, описания, цены. Категории, модификаторы, комбо — всё есть.</div>
+            </div>
+          </div>
+        </div>
+        <div class="demo-cta-row">
+          <a href="#" class="btn-accent">Открыть демо-сайт →</a>
+          <a href="#" class="btn-ghost">Смотреть видео</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="section-inner">
+    <span class="section-tag">Возможности</span>
+    <h2>Всё что нужно — из коробки</h2>
+    <p class="section-sub">Не придётся покупать дополнительные модули или доплачивать за базовые функции.</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🎨</div>
+        <div class="feature-title">Редактор сайта</div>
+        <div class="feature-text">Палитры, блоки, контент — настраиваете визуально без кода. Отдельные страницы для меню, доставки, контактов.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📋</div>
+        <div class="feature-title">Меню с категориями</div>
+        <div class="feature-text">Категории, модификаторы, комбо-блюда, стоп-лист. Клиент видит аппетитные фото и может настроить заказ под себя.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🛵</div>
+        <div class="feature-title">Зоны доставки</div>
+        <div class="feature-text">Рисуете зоны прямо на карте в админке. Разные условия для каждой зоны — цена, минимальный заказ, время.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🏪</div>
+        <div class="feature-title">Несколько филиалов</div>
+        <div class="feature-text">Управляете всеми точками из одного аккаунта. Переключаетесь между заведениями в один клик.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎟️</div>
+        <div class="feature-title">Промокоды и акции</div>
+        <div class="feature-text">Создавайте акции, раздавайте промокоды, настраивайте комбо. Всё сами, без обращений в поддержку.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">👥</div>
+        <div class="feature-title">Роли сотрудников</div>
+        <div class="feature-text">Приглашайте менеджеров, поваров, курьеров. Каждый видит только то, что нужно для его работы.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <div class="feature-title">Аналитика</div>
+        <div class="feature-text">Выручка, средний чек, популярные блюда, источники заказов. Понятные графики без лишнего.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🌐</div>
+        <div class="feature-title">Свой домен</div>
+        <div class="feature-text">Подключите vasya-pizza.ru вместо поддомена. SSL-сертификат выпускается автоматически.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📱</div>
+        <div class="feature-title">Заказы в Telegram</div>
+        <div class="feature-text">Новые заказы мгновенно приходят в Telegram. Не нужно постоянно смотреть в браузер.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXAMPLES -->
+<section style="background: var(--cream); padding: 80px 2rem;">
+  <div class="section-inner">
+    <span class="section-tag">Примеры</span>
+    <h2>Как выглядят сайты клиентов</h2>
+    <p class="section-sub">Каждый настраивает под свой стиль. Один редактор — разные результаты.</p>
+    <div class="examples-grid">
+      <div class="example-card">
+        <div class="example-preview ep-1">
+          <div class="example-preview-inner">
+            <div class="ep-name">ШАУРМА ХАУС</div>
+            <div class="ep-tag">Стрит-фуд · Тёмная тема</div>
+            <div class="ep-dishes">
+              <div class="ep-dish">Классическая</div>
+              <div class="ep-dish">Острая</div>
+            </div>
+          </div>
+        </div>
+        <div class="example-info">
+          <div class="example-name">Шаурма Хаус</div>
+          <div class="example-type">Стрит-фуд, 2 точки</div>
+          <a href="#" class="example-link">Открыть сайт →</a>
+        </div>
+      </div>
+      <div class="example-card">
+        <div class="example-preview ep-2">
+          <div class="example-preview-inner">
+            <div class="ep-name">BLOSSOM</div>
+            <div class="ep-tag">Салон красоты · Зелёная тема</div>
+            <div class="ep-dishes">
+              <div class="ep-dish">Маникюр</div>
+              <div class="ep-dish">Стрижка</div>
+            </div>
+          </div>
+        </div>
+        <div class="example-info">
+          <div class="example-name">Blossom Beauty</div>
+          <div class="example-type">Салон красоты, онлайн-запись</div>
+          <a href="#" class="example-link">Открыть сайт →</a>
+        </div>
+      </div>
+      <div class="example-card">
+        <div class="example-preview ep-3">
+          <div class="example-preview-inner">
+            <div class="ep-name">CLOUD LOUNGE</div>
+            <div class="ep-tag">Кальянная · Тёмная тема</div>
+            <div class="ep-dishes">
+              <div class="ep-dish">Классик</div>
+              <div class="ep-dish">Фруктовый</div>
+            </div>
+          </div>
+        </div>
+        <div class="example-info">
+          <div class="example-name">Cloud Lounge</div>
+          <div class="example-type">Кальянная, бронь столов</div>
+          <a href="#" class="example-link">Открыть сайт →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARE -->
+<section class="compare-section" id="compare">
+  <div class="section-inner">
+    <span class="section-tag">Сравнение</span>
+    <h2>Fastio vs конкуренты</h2>
+    <p class="section-sub">Больше функций за меньшие деньги. И платите помесячно — без обязательств.</p>
+    <div style="overflow-x: auto;">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Функция</th>
+            <th class="fastio-col">Fastio</th>
+            <th>Foodeon</th>
+            <th>Restik</th>
+            <th>QR-Cafe</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Цена в месяц</td>
+            <td class="fastio-col"><strong>от 1 490 ₽</strong></td>
+            <td>от 2 490 ₽</td>
+            <td>от 2 890 ₽</td>
+            <td>2 250 ₽</td>
+          </tr>
+          <tr>
+            <td>Редактор сайта</td>
+            <td class="fastio-col"><span class="check">✓</span> Визуальный</td>
+            <td><span class="cross">✕</span> Нет</td>
+            <td><span class="cross">✕</span> Нет</td>
+            <td><span class="cross">✕</span> Нет</td>
+          </tr>
+          <tr>
+            <td>Самообслуживание</td>
+            <td class="fastio-col"><span class="check">✓</span> Полное</td>
+            <td><span class="check">✓</span> Да</td>
+            <td><span class="check">✓</span> Да</td>
+            <td><span class="cross">✕</span> Через менеджера</td>
+          </tr>
+          <tr>
+            <td>Несколько филиалов</td>
+            <td class="fastio-col"><span class="check">✓</span> Да</td>
+            <td><span class="cross">✕</span> Нет</td>
+            <td><span class="partial">~ </span>Платно</td>
+            <td><span class="cross">✕</span> Нет</td>
+          </tr>
+          <tr>
+            <td>Зоны доставки на карте</td>
+            <td class="fastio-col"><span class="check">✓</span> Да</td>
+            <td><span class="partial">~</span> Базово</td>
+            <td><span class="partial">~</span> Базово</td>
+            <td><span class="cross">✕</span> Нет</td>
+          </tr>
+          <tr>
+            <td>Роли сотрудников</td>
+            <td class="fastio-col"><span class="check">✓</span> Да</td>
+            <td><span class="cross">✕</span> Нет</td>
+            <td><span class="check">✓</span> Да</td>
+            <td><span class="cross">✕</span> Нет</td>
+          </tr>
+          <tr>
+            <td>Помесячная оплата</td>
+            <td class="fastio-col"><span class="check">✓</span> Да</td>
+            <td><span class="check">✓</span> Да</td>
+            <td><span class="cross">✕</span> Только за год</td>
+            <td><span class="check">✓</span> Да</td>
+          </tr>
+          <tr>
+            <td>Комиссия с заказов</td>
+            <td class="fastio-col"><span class="check">✓</span> 0%</td>
+            <td><span class="check">✓</span> 0%</td>
+            <td><span class="check">✓</span> 0%</td>
+            <td><span class="check">✓</span> 0%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="section-inner" style="text-align:center;">
+    <span class="section-tag">Тарифы</span>
+    <h2>Простые цены</h2>
+    <p class="section-sub" style="margin: 0 auto 48px;">Никаких скрытых платежей. Никаких обязательств. Первые 14 дней — бесплатно.</p>
+    <div style="display:grid; grid-template-columns: repeat(3,1fr); gap:20px; max-width:960px; margin:0 auto;">
+
+      <div class="pricing-card">
+        <div class="pricing-label">Старт</div>
+        <div class="pricing-price">490 ₽</div>
+        <div class="pricing-period">в месяц · одно заведение</div>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features">
+          <li>Конструктор сайта</li>
+          <li>Приём заявок и заказов</li>
+          <li>Управление каталогом</li>
+          <li>Уведомления в Telegram</li>
+          <li>Поддомен fastio.ru</li>
+        </ul>
+        <a href="#" class="btn-secondary" style="display:block; text-align:center; font-size:14px;">Начать бесплатно</a>
+        <p style="font-size:12px; color:var(--muted); margin-top:12px; font-weight:300;">Для частных мастеров и услуг без доставки</p>
+      </div>
+
+      <div class="pricing-card featured">
+        <div style="font-size:11px; font-weight:500; background:var(--accent); color:white; padding:4px 12px; border-radius:100px; display:inline-block; margin-bottom:12px; letter-spacing:0.05em;">Популярный</div>
+        <div class="pricing-label">Бизнес</div>
+        <div class="pricing-price">1 490 ₽</div>
+        <div class="pricing-period">в месяц · одно заведение</div>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features">
+          <li>Всё из тарифа Старт</li>
+          <li>Зоны доставки на карте</li>
+          <li>Промокоды и акции</li>
+          <li>Комбо-блюда</li>
+          <li>Расширенная аналитика</li>
+        </ul>
+        <a href="#" class="btn-accent" style="display:block; text-align:center; font-size:14px;">Начать бесплатно</a>
+        <p style="font-size:12px; color:rgba(255,255,255,0.4); margin-top:12px; font-weight:300;">Для кафе, шаурмячных, салонов красоты</p>
+      </div>
+
+      <div class="pricing-card">
+        <div class="pricing-label">Про</div>
+        <div class="pricing-price">2 490 ₽</div>
+        <div class="pricing-period">в месяц · до 5 заведений</div>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features">
+          <li>Всё из тарифа Бизнес</li>
+          <li>До 5 филиалов</li>
+          <li>Роли сотрудников</li>
+          <li>Свой домен + SSL</li>
+          <li>Приоритетная поддержка</li>
+        </ul>
+        <a href="#" class="btn-secondary" style="display:block; text-align:center; font-size:14px;">Начать бесплатно</a>
+        <p style="font-size:12px; color:var(--muted); margin-top:12px; font-weight:300;">Для сетей и нескольких точек</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- STEPS -->
+<section style="background: var(--cream);">
+  <div class="section-inner" style="text-align:center;">
+    <span class="section-tag">Как начать</span>
+    <h2>Три шага до первого заказа</h2>
+    <p class="section-sub" style="margin: 0 auto 60px;">Никаких звонков менеджерам. Никаких договоров. Регистрируетесь и сразу работаете.</p>
+    <div class="steps-grid">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-title">Регистрируетесь</div>
+        <div class="step-text">Создаёте аккаунт, вводите название заведения. Занимает 2 минуты.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-title">Настраиваете сайт и меню</div>
+        <div class="step-text">Выбираете палитру, добавляете блюда с фото, настраиваете доставку.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-title">Принимаете заказы</div>
+        <div class="step-text">Даёте ссылку клиентам — заказы приходят прямо в Telegram.</div>
+      </div>
+    </div>
+    <div style="margin-top: 48px;">
+      <a href="#" class="btn-primary">Попробовать бесплатно — 14 дней</a>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="section-inner">
+    <span class="section-tag">FAQ</span>
+    <h2>Частые вопросы</h2>
+    <div class="faq-list" style="margin-top: 40px;">
+      <div class="faq-item open">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          Нужен ли мне домен?
+          <span class="faq-chevron">▾</span>
+        </div>
+        <div class="faq-answer">Нет. Мы даём поддомен вида yourname.fastio.ru — он работает сразу после регистрации. Если хотите свой домен (например vasya-pizza.ru) — можно подключить в любой момент на тарифе Про. SSL-сертификат выпускается автоматически.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          Я частный мастер — мне подойдёт?
+          <span class="faq-chevron">▾</span>
+        </div>
+        <div class="faq-answer">Да, для этого и создан тариф Старт. Вы получаете сайт с каталогом услуг и формой заявки. Клиент оставляет заявку — она приходит вам в Telegram. Никаких лишних функций — только то, что нужно.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          Как клиенты платят за заказы?
+          <span class="faq-chevron">▾</span>
+        </div>
+        <div class="faq-answer">Можно принимать оплату онлайн (картой через ваш эквайринг) или при получении. Настройка способов оплаты — в разделе настроек. Комиссию с заказов мы не берём.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          Можно ли управлять несколькими точками?
+          <span class="faq-chevron">▾</span>
+        </div>
+        <div class="faq-answer">Да. На тарифе Про — до 5 заведений из одного аккаунта. Переключаетесь между ними прямо в панели управления. У каждого заведения своё меню, сайт, зоны доставки.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          Что будет если я не оплачу следующий месяц?
+          <span class="faq-chevron">▾</span>
+        </div>
+        <div class="faq-answer">Сайт перестанет принимать новые заказы, но ваши данные сохранятся. Как только пополните баланс — всё сразу восстановится. Данные не удаляем.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          Нужны ли технические знания?
+          <span class="faq-chevron">▾</span>
+        </div>
+        <div class="faq-answer">Нет. Редактор визуальный — перетаскиваете блоки, выбираете цвета, загружаете фото. Если что-то не получается — напишите нам в Telegram, отвечаем быстро.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="section-inner">
+    <h2>Запустите свой сайт сегодня</h2>
+    <p class="cta-sub">14 дней бесплатно. Без карты. Без звонков менеджерам.</p>
+    <div class="cta-actions">
+      <a href="#" class="btn-accent" style="font-size:16px; padding: 16px 32px;">Попробовать бесплатно</a>
+      <a href="#demo" class="btn-ghost" style="font-size:16px; padding: 16px 32px;">Смотреть демо</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-copy">© 2025 Fastio. Все права защищены.</span>
+  <ul class="footer-links">
+    <li><a href="#">Политика конфиденциальности</a></li>
+    <li><a href="#">Оферта</a></li>
+    <li><a href="https://t.me/fastio" target="_blank">Telegram</a></li>
+  </ul>
+</footer>
+
+<script>
+function toggleFaq(el) {
+  const item = el.parentElement;
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+</script>
+
+</body>
+</html>
